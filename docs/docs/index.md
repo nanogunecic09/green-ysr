@@ -14,7 +14,6 @@ The examples in the test folder are written with .ipynb files. VS code, among ot
 
 ## Quick tutorial
 
-
 The simplest calculation is the spectra of a single atom. You can find an example in test/single_atom.ipynb.
 
 To load the simulator use:
