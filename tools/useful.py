@@ -9,12 +9,12 @@ def load_obj(name ):
     with open( name + '.pkl', 'rb') as f:
         return pickle.load(f)
 
-def chain_save(chain_sim):
+def sim_save(sim):
     keys = ['N','direction','pitch_x','mode','U','J','angles']
-    fname = '../out/paper_Mn/9_Jvary/Chain_sim_'
+    fname = '../out/sim'
     for i in keys:
-        fname  =  fname +'_'+ i  + '{}'.format(chain_sim.par[i])
-    save_obj(chain_sim,fname)
+        fname  =  fname +'_'+ i  + '{}'.format(sim.par[i])
+    save_obj(sim,fname)
 
 def plot_LS(chain_sim):
     plt.figure()

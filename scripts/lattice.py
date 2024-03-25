@@ -9,17 +9,18 @@ import sys
 import matplotlib.pyplot as plt
 
 class lattice():
-    def __init__(self,N,coords,direction=(1,0),U=0,J=0.04,spiral = 0,mode=0,m=18.7,pf = 0.21,delta_s = 0.78e-3,gamma_s=20e-6) -> None:
+    def __init__(self,N,coords,direction=(1,0),U=0,alpha=0.04,spiral = 0,mode=0,m=18.7,pf = 0.21,delta_s = 0.78e-3,gamma_s=20e-6) -> None:
         self.N = N
         self.direction = direction
         self.mode = mode
         self.m=m
         self.pf=pf
         self.delta_s = delta_s
+        self.pitch_x = None
         self.gamma_s = gamma_s
         self.U = np.zeros(self.N)+U
         self.c = const.physical_constants['Hartree energy'][0]/const.e
-        self.J = np.zeros(self.N)+J
+        self.alpha = np.zeros(self.N)+alpha
         self.coords = coords
         # create angles
         self.angles = []
@@ -28,18 +29,19 @@ class lattice():
             a += spiral
             self.angles.append(a)
         self.E = np.linspace(-5*self.delta_s,5*self.delta_s,100)
-        self.sim = gr.lattice(self.N , self.J , self.angles , self.coords,U=self.U ,m=self.m,pf=self.pf,delta=self.delta_s/self.c,mode=self.mode)
+        self.sim = gr.lattice(self.N , self.alpha , self.angles , self.coords,U=self.U ,m=self.m,pf=self.pf,delta=self.delta_s/self.c,mode=self.mode)
         self.par = { # to save parameters
             'N' : N,
             'direction' : direction,
             'coords' : coords,
             'mode' : mode,
             'm' : m,
+            'pitch_x' : None,
             'pf' : pf,
             'delta_s' : delta_s,
             'gamma_s' : gamma_s,
             'U' : U,
-            'J' : J,
+            'alpha' : alpha,
             'E' : [1.5*self.delta_s,100],
             'angles' : spiral,
         }

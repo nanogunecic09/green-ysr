@@ -5,13 +5,13 @@ from scipy import constants as const
 
 class lattice():
 
-    def __init__(self,N,J,theta,r__,U=0,m=20.956,pf=0.274,delta=0.0000287,gamma=40e-6,mode=1):
+    def __init__(self,N,alpha,theta,r__,U=0,m=20.956,pf=0.274,delta=0.0000287,gamma=40e-6,mode=1):
         self.N = N
         self.s0 = np.array([[1,0],[0,1]])
         self.s1 = np.array([[0,1],[1,0]])
         self.s3 = np.array([[1,0],[0,-1]])
         self.theta_ = theta # theta of the spins
-        self.J_ = J # J of the atoms in order
+        self.alpha_ = alpha # alpha of the atoms in order
         self.U_ = U # potential scattering
         self.r__ = r__ #atomic positions
         self.m = m # mass electron
@@ -67,15 +67,15 @@ class lattice():
             G0 = G1+G2
         return G0
     
-    def V(self,theta,J,U):
-        return J * np.cos(theta)*np.kron(self.s0,self.s3) + J*np.sin(theta)*np.kron(self.s0,self.s1) + U*np.kron(self.s3,self.s0)
+    def V(self,theta,alpha,U):
+        return alpha * np.cos(theta)*np.kron(self.s0,self.s3) + alpha*np.sin(theta)*np.kron(self.s0,self.s1) + U*np.kron(self.s3,self.s0)
     
     def M(self,E):
         n=self.N
         M = np.zeros((4*n,4*n),dtype=complex)
         for i in range(0,4*n,4):
             for j in range(0,4*n,4):
-                M[i:i+4,j:j+4] = np.dot(self.G0(self.r__[i//4],self.r__[j//4],E),self.V(self.theta_[j//4],self.J_[j//4],self.U_[j//4]))
+                M[i:i+4,j:j+4] = np.dot(self.G0(self.r__[i//4],self.r__[j//4],E),self.V(self.theta_[j//4],self.alpha_[j//4],self.U_[j//4]))
         return M
 
     def G0_(self,r_,E):
@@ -93,7 +93,7 @@ class lattice():
         G += self.G0((0,0),(0,0),E)
         n=0
         for i in range(0,4*self.N,4):
-            G += np.dot(np.dot( self.G0(r_,self.r__[n],E) , self.V(self.theta_[n] ,self.J_[n],self.U_[n])), GG[i:i+4,0:4])
+            G += np.dot(np.dot( self.G0(r_,self.r__[n],E) , self.V(self.theta_[n] ,self.alpha_[n],self.U_[n])), GG[i:i+4,0:4])
             n+=1
         return G
 
@@ -107,11 +107,11 @@ class lattice():
         return np.imag(np.trace(np.dot(self.G(r_,E),np.diag((0,0,1,1)))))
 
     def rhoss(self,L,E):
-        self.JL_ = self.J_*L
+        self.alphaL_ = self.alpha_*L
         rhoss = 0
         for n in range(0,self.N):
             G = -np.imag(self.G(self.r__[n],E))
-            rhoss += self.JL_[n]*( (G[0,0]-G[1,1]) * np.cos(self.theta_[n]) + (G[1,0]-G[0,1]) * np.sin(self.theta_[n]) )
+            rhoss += self.alphaL_[n]*( (G[0,0]-G[1,1]) * np.cos(self.theta_[n]) + (G[1,0]-G[0,1]) * np.sin(self.theta_[n]) )
         return rhoss
     def spectra(self,r_):
         c = const.physical_constants['Hartree energy'][0]/const.e
