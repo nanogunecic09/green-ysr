@@ -1,0 +1,13 @@
+src: codigo de green
+convolution-deconvolution
+function pack: fermi, dynes, bcs, 
+
+inputs: material parameters, coordinates, measurement
+
+outputs: local dos
+
+examples:
+single atom
+dimers (linescan)
+cadenas (linescan)
+lattice (map)
