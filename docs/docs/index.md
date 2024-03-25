@@ -38,4 +38,8 @@ This should produce:
 
 ![alt text](https://github.com/nanogunecic09/Green_YSR/blob/main/docs/docs/monomer_dos.png?raw=true)
 
+The rest of the arguments of ch.chain are implicit and can be modified if needed. The material parameters that determine the period of the YSR wavefunction and the coherence length are: 'm' the effective mass and 'pf0' the Fermi momentum.
+
+
+
 ## About
