@@ -36,5 +36,6 @@ To calculate the LDOS in the point (0,0) and plot it:
 
 This should produce:
 
+![alt text](https://github.com/nanogunecic09/Green_YSR/blob/main/docs/docs/monomer_dos.png?raw=true)
 
 ## About
