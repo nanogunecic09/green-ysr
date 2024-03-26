@@ -32,10 +32,10 @@ class lattice():
             x1 = np.sqrt(x**2+y**2)
             ## mode=0 is for the spherical Fermi surface ##
             ## for this mode x1 is the radial distance and x2 is the angle ##
-            u=np.complex(x1*pf , x1*m*w/(pf))
+            u=complex(x1*pf , x1*m*w/(pf))
             a=scisp.jv(0,u) #bessel function 0th order u=argument
             b=complex(struveh(0,u)) #gives the struve function
-            G0=m/2*(np.complex(np.real(a+np.complex(0,1)*b),0))*BCS + m/2*(np.complex(np.imag(a+np.complex(0,1)*b),0)) * xi
+            G0=m/2*(complex(np.real(a+complex(0,1)*b),0))*BCS + m/2*(complex(np.imag(a+complex(0,1)*b),0)) * xi
      
         if self.mode==1:
             x1=r1[0]-r2[0]

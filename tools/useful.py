@@ -10,7 +10,7 @@ def load_obj(name ):
         return pickle.load(f)
 
 def sim_save(sim):
-    keys = ['N','direction','pitch_x','mode','U','J','angles']
+    keys = ['N','direction','pitch_x','mode','U','alpha','angles']
     fname = '../out/sim'
     for i in keys:
         fname  =  fname +'_'+ i  + '{}'.format(sim.par[i])
