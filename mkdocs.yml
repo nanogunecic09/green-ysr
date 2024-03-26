@@ -1,0 +1,9 @@
+site_name: green-ysr
+
+site_url: https://github.com/nanogunecic09/green-ysr
+nav:
+    - Home: index.md
+    - User guide: userguide.md
+
+
+theme: readthedocs

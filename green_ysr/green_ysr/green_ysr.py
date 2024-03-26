@@ -7,6 +7,7 @@ import pickle
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
 def fdd( E, mu, T): #fermi Dirac function
+    print('prova')
     if T == 0:
         f = np.heaviside(-(E-mu), 1)
     else:

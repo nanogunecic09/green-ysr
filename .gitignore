@@ -4,3 +4,4 @@ green_ysr/dist
 green-ysr/dist/*
 green-ysr/tests/__pycache__/test_dimer.cpython-39-pytest-6.2.4.pyc
 green-ysr/green_ysr/__pycache__/green_ysr.cpython-39.pyc
+site

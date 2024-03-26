@@ -6,11 +6,9 @@ The aim of this package is the calculation of the local density of states (LDOS)
 
 ## Requirements
 
-Clone the following repo: [Repo Green_YSR](https://github.com/nanogunecic09/Green_YSR)
-
 I suggest using Anaconda python, the calculations are based on standard numpy, scipy, math pkgs.
 
-The examples in the test folder are written with .ipynb files. VS code, among others, provides an add-on to visualize and work with notebooks.
+To start 
 
 ## Quick tutorial
 
