@@ -4,6 +4,7 @@ version = "0.0.1"
 description = "green function model to calculate LDOS of multiple YSR impurites"
 authors = ["stefanotriv <s.trivini@nanogune.eu>"]
 readme = "README.md"
+license = "MIT"
 homepage = "https://github.com/nanogunecic09/green-ysr"
 
 [tool.poetry.dependencies]
