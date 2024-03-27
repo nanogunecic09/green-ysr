@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://github.com/nanogunecic09/green-ysr/reference/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Reference - green-ysr</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Reference";
+        var mkdocs_page_input_path = "reference.md";
+        var mkdocs_page_url = "/nanogunecic09/green-ysr/reference/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> green-ysr
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../scripting/">Scripting</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Reference</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#class-green_ysrlatticekwargs">class green_ysr.lattice(**kwargs)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#class-green_ysrgreenkwargs">class green_ysr.green(**kwargs)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#additional-functions">Additional functions</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">green-ysr</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Reference</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h2 id="reference">Reference</h2>
+<h3 id="class-green_ysrlatticekwargs"><em>class</em> green_ysr.lattice(**kwargs)</h3>
+<blockquote>
+<p>The atomic lattice to simulate.</p>
+</blockquote>
+<p><strong>kwargs</strong>:</p>
+<p>type : string  </p>
+<blockquote>
+<p>type of lattice, 'single atom', '1D' or '2D'</p>
+</blockquote>
+<p>N : int  </p>
+<blockquote>
+<p>Number of atoms in the system  </p>
+</blockquote>
+<p>coords : list  </p>
+<blockquote>
+<p>in the case of a '2D' lattice, a list of the atomic coordinates must be provided</p>
+</blockquote>
+<p>pitch_x : float  </p>
+<blockquote>
+<p>for a equi-spaced '1D' chain the pitch_x is the spacing of the atoms in the chain, needed to generate the coordinates</p>
+</blockquote>
+<p>direction : tuple  </p>
+<blockquote>
+<p>direction of elongation of the chain in cristallographic notation, e.g. (1,0) is horizontal, (1,1) is 45 degrees</p>
+</blockquote>
+<p>alpha : float  </p>
+<blockquote>
+<p>Adimensional exchange coupling parameter</p>
+</blockquote>
+<p>theta : float  </p>
+<blockquote>
+<p>angle describing the orientation in rad of the classical spins</p>
+</blockquote>
+<p>U : float  </p>
+<blockquote>
+<p>adimensional potential scattering parameter  </p>
+</blockquote>
+<p>spiral : float  </p>
+<blockquote>
+<p>if inserted is the pace of the spin spiral along the chain in radiants  </p>
+</blockquote>
+<p>m : float  </p>
+<blockquote>
+<p>effective mass multiplied by pi in atomic unit  </p>
+</blockquote>
+<p>pf : float  </p>
+<blockquote>
+<p>fermi momentum in atomic units  </p>
+</blockquote>
+<p>delta : float  </p>
+<blockquote>
+<p>superconducting order parameter in atomic units  </p>
+</blockquote>
+<p>gamma : float  </p>
+<blockquote>
+<p>dynes parameter in atomic units  </p>
+</blockquote>
+<p>mode : int  </p>
+<blockquote>
+<p>fermi surface dimensionality, 1 for circular, 2 for squared  </p>
+</blockquote>
+<p>E_px : int  </p>
+<blockquote>
+<p>point of energy to calculate  </p>
+</blockquote>
+<p>E_range : tuple  </p>
+<blockquote>
+<p>extremes of the energy, set 0,2 for calculate half of the spectrum  </p>
+</blockquote>
+<p>V_range : tuple  </p>
+<blockquote>
+<p>extremes of the voltage, used when doing the convolution  </p>
+</blockquote>
+<p>spin_texture : list  </p>
+<blockquote>
+<p>list of the spin orientation of the atoms in the structure, if not provided will be ferromagnetic  </p>
+</blockquote>
+<p><strong>Attributes:</strong></p>
+<p>E : array  </p>
+<blockquote>
+<p>energy array  </p>
+</blockquote>
+<p>V : array  </p>
+<blockquote>
+<p>voltage array, for convolution. The V range has to be always lower than E for the convolution.  </p>
+</blockquote>
+<p>sim : class  </p>
+<blockquote>
+<p>is the solver of the green function  </p>
+</blockquote>
+<p>par : dict  </p>
+<blockquote>
+<p>save all parameters  </p>
+</blockquote>
+<p>coord_gen()  </p>
+<blockquote>
+<p>for generating chain coordinates fiven the pitch<br />
+<strong>return</strong> array of coordinates</p>
+</blockquote>
+<p>show_lattice()  </p>
+<blockquote>
+<p>show the lattice coordinates in a plot</p>
+</blockquote>
+<p>map_coord_gen()  </p>
+<blockquote>
+<p>generate the coordinate for a didv map</p>
+</blockquote>
+<p><strong>Parameters :</strong>  </p>
+<p>spac : float  </p>
+<blockquote>
+<p>spacing in atomic units of the lattice  </p>
+</blockquote>
+<p>resolution : int  </p>
+<blockquote>
+<p>number of pixel in one line of the didv map  </p>
+</blockquote>
+<p>size : int  </p>
+<blockquote>
+<p>size of one side of the didv map in units of spac (spacing)  </p>
+</blockquote>
+<p>show_lattice_map()</p>
+<blockquote>
+<p>show the lattice and the didv map coordinates in a plot</p>
+</blockquote>
+<p>didv()  </p>
+<blockquote>
+<p>calculate the didv in one point<br />
+<strong>Parameters :</strong><br />
+coord : tuple<br />
+coordinates of the measurement point<br />
+<strong>return</strong> array with spectra (normalized to normal conductance)  </p>
+</blockquote>
+<p>didv_map_calc()  </p>
+<blockquote>
+<p>caculates the didv map and store it in self.didv_map</p>
+</blockquote>
+<p>didv_conv()  </p>
+<blockquote>
+<p>calculate the convolution with the superconducting tip at the temperature specified in self.T  <br />
+<strong>Parameters :</strong><br />
+coord : tuple<br />
+coordinates of the measurement point  </p>
+</blockquote>
+<p>Delta_t : float  </p>
+<blockquote>
+<p>pairing amplitude in the tip electrode in meV  </p>
+</blockquote>
+<p>Gamma_t : float  </p>
+<blockquote>
+<p>dynes parameter in meV<br />
+<strong>return</strong> array with tip convoluted spectra (normalized to normal conductance)  </p>
+</blockquote>
+<p>linescan()  </p>
+<blockquote>
+<p>compute a line of spectra (saved in self.LS) along the 1D chain direction, including initial and final portion of superconductor (pitch_x)<br />
+<strong>Parameters :</strong><br />
+density : int<br />
+number of points per atom in the linescan</p>
+</blockquote>
+<p>LSconvolute()  </p>
+<blockquote>
+<p>compute the convoluted linescan (saved in self.LSC) at the temperature specified in self.T<br />
+<strong>Parameters :</strong><br />
+coord : tuple<br />
+coordinates of the measurement point</p>
+</blockquote>
+<p>Delta_t : float  </p>
+<blockquote>
+<p>pairing amplitude of the tip electrode in meV</p>
+</blockquote>
+<p>Gamma_t : float  </p>
+<blockquote>
+<p>Dynes parameter of the tip</p>
+</blockquote>
+<p>explorer()  </p>
+<blockquote>
+<p>opens a slider plot to explore self.didv_map in constant energy cuts</p>
+</blockquote>
+<p>update_energy()  </p>
+<blockquote>
+<p>vital to explorer()</p>
+</blockquote>
+<p>update_cscale()  </p>
+<blockquote>
+<p>vital to explorer()</p>
+</blockquote>
+<h3 id="class-green_ysrgreenkwargs"><em>class</em> green_ysr.green(**kwargs)</h3>
+<blockquote>
+<p>To calculate the green function.</p>
+</blockquote>
+<p><strong>Parameters :</strong></p>
+<p>N : int  </p>
+<blockquote>
+<p>Number of atoms in the system  </p>
+</blockquote>
+<p>alpha : float  </p>
+<blockquote>
+<p>Adimensional exchange coupling parameter  </p>
+</blockquote>
+<p>theta : float  </p>
+<blockquote>
+<p>angle describing the orientation in rad of the classical spins  </p>
+</blockquote>
+<p>r__ : list   </p>
+<blockquote>
+<p>set of atomic coordinates  </p>
+</blockquote>
+<p>U : float  </p>
+<blockquote>
+<p>adimensional potential scattering parameter  </p>
+</blockquote>
+<p>m : float  </p>
+<blockquote>
+<p>effective mass multiplied by pi in atomic unit  </p>
+</blockquote>
+<p>pf : float  </p>
+<blockquote>
+<p>fermi momentum in atomic units  </p>
+</blockquote>
+<p>delta : float  </p>
+<blockquote>
+<p>superconducting order parameter in atomic units  </p>
+</blockquote>
+<p>gamma : float  </p>
+<blockquote>
+<p>dynes parameter in atomic units  </p>
+</blockquote>
+<p>mode : int  </p>
+<blockquote>
+<p>fermi surface dimensionality, 1 for circular, 2 for squared  </p>
+</blockquote>
+<p><strong>Attributes:</strong></p>
+<p>s0-1-3 : numpy array  </p>
+<blockquote>
+<p>pauli matrices</p>
+</blockquote>
+<p>G0()  </p>
+<blockquote>
+<p>analitical form of the unperturbed green function</p>
+</blockquote>
+<p>V()  </p>
+<blockquote>
+<p>Potential matrix of each impurity
+<strong>return</strong> a 4x4 matrix</p>
+</blockquote>
+<p>G0_()  </p>
+<blockquote>
+<p>green function of the Dyson series
+<strong>return</strong> a 4x4N matrix</p>
+</blockquote>
+<p>G()  </p>
+<blockquote>
+<p>full green function
+<strong>return</strong> a 4Nx4N matrix</p>
+</blockquote>
+<p>DOS()  </p>
+<blockquote>
+<p>compute the spectrum of the green function</p>
+</blockquote>
+<p>ElecDOS()  </p>
+<blockquote>
+<p>Compute the electron part of the spectral function</p>
+</blockquote>
+<p>ElecDOS()  </p>
+<blockquote>
+<p>Compute the hole part of the spectral function</p>
+</blockquote>
+<h3 id="additional-functions"><strong>Additional functions</strong></h3>
+<p>fdd()  </p>
+<blockquote>
+<p>Fermi dirac distribution</p>
+</blockquote>
+<p>dynesdos()  </p>
+<blockquote>
+<p>Dynes dos of a superconductor</p>
+</blockquote>
+<p>dynesConvolute()  </p>
+<blockquote>
+<p>numerical convolution of a conducance array</p>
+</blockquote>
+<p>save_obj()  </p>
+<blockquote>
+<p>save an arbitrary object</p>
+</blockquote>
+<p>load_obj()  </p>
+<blockquote>
+<p>load an arbitrary object given its path without extension</p>
+</blockquote>
+<p>sim_save()  </p>
+<blockquote>
+<p>to save a simulation, including important parameters in the name</p>
+</blockquote>
+<p>plot_LS()  </p>
+<blockquote>
+<p>to show the result of a line of spectra calculated with lattice()</p>
+</blockquote>
+<p>set_size_cm()  </p>
+<blockquote>
+<p>to change the size of a figure axis</p>
+</blockquote>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../scripting/" class="btn btn-neutral float-left" title="Scripting"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../scripting/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

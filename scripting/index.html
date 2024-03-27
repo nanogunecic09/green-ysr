@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://github.com/nanogunecic09/green-ysr/scripting/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Scripting - green-ysr</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Scripting";
+        var mkdocs_page_input_path = "scripting.md";
+        var mkdocs_page_url = "/nanogunecic09/green-ysr/scripting/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> green-ysr
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Scripting</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#single-atom">Single atom</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#dimer">Dimer</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#saving-results">Saving results</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#chains">Chains</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../reference/">Reference</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">green-ysr</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Scripting</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h2 id="scripting">Scripting</h2>
+<p>For quick start-up we follow with examples of LDOS calculations.</p>
+<p>After installation, import the package and matplotlib with:</p>
+<pre><code>import green_ysr as gr
+import matplotlib.pyplot as plt
+</code></pre>
+<h3 id="single-atom">Single atom</h3>
+<p>Calculation of the surface BCS spectrum and a single classical spin impurity.</p>
+<p>Initialize the surface with:</p>
+<pre><code>surface = gr.lattice(type='atom',alpha=0)
+</code></pre>
+<p>Initialize the atom with:</p>
+<pre><code>atom = gr.lattice(type='atom',alpha=0.05)
+</code></pre>
+<p>In the last two codechunks alpha is the adimensional exchange coupling, 0 for the bare surface dos and finite for the atom. The rest of the arguments are implicit and can be modified if needed (see reference).</p>
+<p>To calculate the density of states:</p>
+<pre><code>surface.didv([0,0])
+</code></pre>
+<p>where [0,0] is the position where the spectrum is measured.</p>
+<p>Plot of the result:</p>
+<pre><code>plt.plot(surface.E*1e3,surface.didv([0,0]))
+plt.plot(atom.E*1e3,atom.didv([0,0]))
+
+# for cosmetics
+plt.xlabel('Energy (meV)')
+plt.ylabel('LDOS (Gn)')
+plt.xlim()
+gr.set_size_cm(8,5)
+plt.tight_layout()
+</code></pre>
+<p>this should show the spectrum with the YSR resonance:</p>
+<p><img alt="alt text" src="../single_atom.png" /></p>
+<p>To compute the convolution with a superconducting tip the didv_conv function is used instead:</p>
+<pre><code>plt.plot(surface.V*1e3,surface.didv_conv([0,0]))
+plt.plot(atom.V*1e3,atom.didv_conv([0,0]))
+
+
+plt.xlabel('Energy (meV)')
+plt.ylabel('LDOS (Gn)')
+plt.tick_params(axis='both',direction='in')
+gr.set_size_cm(8,5)
+plt.tight_layout()
+</code></pre>
+<p>this should produce this plot:</p>
+<p><img alt="alt text" src="../conv_single_atom.png" /></p>
+<h3 id="dimer">Dimer</h3>
+<p>For a dimer we ser N=2 and the pitch_x as the distance between the two atoms in atomic units (Bohr radius). The atoms of the dimer have coordinates ([0,0],[0,8]).</p>
+<pre><code>dimer = gr.lattice(N=2,type='1D',pitch_x=8,alpha=0.05)
+</code></pre>
+<p>Doing the same calculation in [0,0] and plot you should see:</p>
+<p><img alt="alt text" src="../dimer_spec.png" /></p>
+<p>A quick function to calculate the dos along the dimer axis is:</p>
+<pre><code>dimer.linescan(3)
+</code></pre>
+<p>That results in the even-odd superposition of YSR states.</p>
+<p><img alt="alt text" src="../dimer.png" /></p>
+<h3 id="saving-results">Saving results</h3>
+<p>There is the possibility of saving and loading simulations. To save the dimer simulation above just add:</p>
+<pre><code>gr.sim_save(dimer)
+</code></pre>
+<p>this stores the result in the /out folder with an generated filename, containing information of the simulation. It can be loaded using:</p>
+<pre><code>dimer = uf.load_obj(fname)
+</code></pre>
+<p>where fname is the path of the saved file without extension.</p>
+<h3 id="chains">Chains</h3>
+<p>The extension from dimers to chains is straightfarward, since one only needs to increment N and specify the chain direction:</p>
+<pre><code>chain = gr.lattice(N=10,type='1D',pitch_x=6.3,alpha=0.07,U=0.07)
+</code></pre>
+<p>The chain is 10 atoms along the horizontal direction with distance 6.3 a0. We introduced here a finite potential scattering U to better visualize the quantum well states. To compute a line of spectra along the chain:</p>
+<pre><code>chain.linescan(5)
+</code></pre>
+<p>with 5 the resolution, 5 spectra per atom. The result is stored in chain.LS and can be quicly visualized by:</p>
+<pre><code>gr.plot_LS(chain)
+</code></pre>
+<p>that results in:</p>
+<p><img alt="alt text" src="../chain_sim.png" /></p>
+<p>that you can save as explained above.</p>
+<h2 id="arbitrary-lattice">Arbitrary lattice</h2>
+<p>Arbitrary atomic lattices can be simulated given a set of coordinates. For example a cross with 5 atoms with coordinates:</p>
+<pre><code>cross_coords = (
+    (0,0),
+    (12.6,12.6),
+    (-12.6,12.6),
+    (12.6,-12.6),
+    (-12.6,-12.6),
+)
+</code></pre>
+<p>To initialize the calculation:</p>
+<pre><code>cross = gr.lattice(type='2D',N=5,coords=cross_coords,alpha=0.04,E_px=50,E_range=[0,2])
+</code></pre>
+<p>where we limited the energy points and range (didv is simmetric since particle-hole simmetry).</p>
+<p>The .didv method can be used to calculate the LDOS in specific points (see above). To calculate the DOS in a squared grid around the structure, first generate the grid points:</p>
+<pre><code>cross.map_coord_gen(12.6,28,4)
+cross.show_lattice_map()
+</code></pre>
+<p>the second command with show the lattice toghether with the LDOS map points:</p>
+<p><img alt="alt text" src="../lattice_map.png" /></p>
+<p>The first input is the spacing of the structure along x, the second is the number of pixel per line and the third is the lateral size of the map in units of the spacing.</p>
+<p>To run the calculation and save it afterwards:</p>
+<pre><code>cross.didv_map_calc()
+
+gr.sim_save(cross)
+</code></pre>
+<p>The DOS map is stored in cross.didv_map, and can be easily visualized with a built in function:</p>
+<pre><code>cross.explorer()
+</code></pre>
+<p>that will show a slider based viewer:</p>
+<p><img alt="alt text" src="../explorer.png" /></p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../installation/" class="btn btn-neutral float-left" title="Installation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../reference/" class="btn btn-neutral float-right" title="Reference">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../installation/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../reference/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
