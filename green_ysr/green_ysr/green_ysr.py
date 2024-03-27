@@ -6,8 +6,8 @@ import time
 import pickle
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
+
 def fdd( E, mu, T): #fermi Dirac function
-    print('prova')
     if T == 0:
         f = np.heaviside(-(E-mu), 1)
     else:
@@ -19,7 +19,7 @@ def dynesdos(E, Gamma, Delta): #dynes function
     dos = np.real((np.abs(E+1j*Gamma))/np.sqrt((E+1j*Gamma)**2-Delta**2))
     return np.abs(dos)
 
-def dynesConvolute(V,E_int,conductance,delta,T,gamma):
+def dynesConvolute(V,E_int,conductance,delta,T,gamma): #numerical convolution 
     curr = []
     for Vp in V:
         currp = np.trapz((conductance)*dynesdos(E_int-Vp,gamma,delta)*(fdd(E_int, Vp, T)-fdd(E_int,0, T)),x=E_int)
@@ -34,15 +34,19 @@ def load_obj(name ):
         return pickle.load(f)
 
 def sim_save(sim):
-    keys = ['N','direction','pitch_x','mode','U','alpha','angles']
+    keys = ['type','N','direction','pitch_x','mode','U','alpha','angles']
     fname = '../out/sim'
     for i in keys:
         fname  =  fname +'_'+ i  + '{}'.format(sim.par[i])
     save_obj(sim,fname)
 
-def plot_LS(chain_sim):
+def plot_LS(sim):
     plt.figure()
-    plt.imshow(chain_sim.LS,extent=[chain_sim.E[0]/chain_sim.par['delta_s'],chain_sim.E[-1]/chain_sim.par['delta_s'],0,1],aspect='auto')
+    plt.imshow(sim.LS,extent=[sim.E[0]/sim.par['delta_s'],sim.E[-1]/sim.par['delta_s'],0,sim.length*const.physical_constants['Bohr radius'][0]*1e9],aspect='auto')
+    plt.xlim(-2,2)
+    plt.ylabel('Distance (nm)')
+    plt.xlabel('Energy (meV)')
+
 
 def set_size_cm(w,h, ax=None):
     """ w, h: width, height in cm """
@@ -67,46 +71,8 @@ def spines(ax):
     matplotlib.rcParams['axes.unicode_minus']=False
 
 
-class grid():
-
-    def __init__(self,bias,didv_map):
-        self.conductance = didv_map
-        self.bias = bias
-
-    
-    def explorer(self):
-        self.figure = plt.figure(figsize=(6,6))
-        self.axMap = self.figure.add_subplot(1,1,1)
-        self.figure.subplots_adjust(bottom=0.35)
-        self.ax1 = self.figure.add_axes([0.20, 0.10, 0.65, 0.03])
-        self.ax2 = self.figure.add_axes([0.20, 0.15, 0.65, 0.03])
-        self.ax3 = self.figure.add_axes([0.20, 0.20, 0.65, 0.03])
-        self.energyCut_slider = Slider(self.ax1,'Energy cut',self.bias.min()*1e3,self.bias.max()*1e3,valinit=0, valstep=(0.01))
-        self.smin_slider = Slider(self.ax2, 'Min', self.conductance.min(), self.conductance.max(), valinit =self.conductance.min())
-        self.smax_slider = Slider(self.ax3, 'Max', self.conductance.min(), self.conductance.max(), valinit =self.conductance.max()*0.5)            
-        self.energyCut_slider.on_changed(self.update_energy)
-        self.smin_slider.on_changed(self.update_cscale)
-        self.smax_slider.on_changed(self.update_cscale)
-        self.conductance_cut = self.conductance[:,:,0]
-        self.im1 = self.axMap.imshow(np.flipud(self.conductance_cut),interpolation='nearest')
-        #axis labels
-        self.axMap.set_xlabel('x (nm)')
-        self.axMap.set_ylabel('y (nm)')
-
-    def update_energy(self,val):
-        self.cutIdx = (abs(self.bias-val*1e-3)).argmin()
-        self.im1.set_data(np.flipud(self.conductance[:,:,self.cutIdx]))
-        self.im1.set_clim(self.conductance[:,:,self.cutIdx].min(),self.conductance[:,:,self.cutIdx].max())
-        # self.label.set_text('{} mV'.format(np.round(val,2)))
-        self.figure.canvas.draw()
-
-    def update_cscale(self,val):
-        self.im1.set_clim([self.smin_slider.val,self.smax_slider.val])
-        self.figure.canvas.draw()
-
 
 class green():
-
     def __init__(self,N,alpha,theta,r__,U=0,m=20.956,pf=0.274,delta=0.0000287,gamma=40e-6,mode=1):
         self.N = N
         self.s0 = np.array([[1,0],[0,1]])
@@ -119,8 +85,8 @@ class green():
         self.m = m # mass electron
         self.pf = pf # fermi momentum
         self.delta = delta # delta superconductor
-        self.gamma = gamma
-        self.mode = mode
+        self.gamma = gamma # dynes parameter
+        self.mode = mode # dimensionality of fermi surface 1 circular, 2 squared
     def G0(self,r1,r2,E):
         delta = self.delta
         w = np.sqrt(delta**2-E**2)
@@ -215,6 +181,7 @@ class green():
             G = -np.imag(self.G(self.r__[n],E))
             rhoss += self.alphaL_[n]*( (G[0,0]-G[1,1]) * np.cos(self.theta_[n]) + (G[1,0]-G[0,1]) * np.sin(self.theta_[n]) )
         return rhoss
+
     def spectra(self,r_):
         c = const.physical_constants['Hartree energy'][0]/const.e
         E = np.linspace(-4*self.delta ,4*self.delta,300)/c
@@ -227,34 +194,53 @@ class green():
         return np.imag(self.G(r_,E))
     
 
+    
 
-class chain():
-    def __init__(self,N,pitch_x,direction=(1,0),U=0,alpha=0.04,spiral = 0,mode=0,m=18.7,pf = 0.21,delta_s = 1e-3,gamma_s=20e-6,E_px=100,E_range=5,V_range=2.8) -> None:
+class lattice():
+    def __init__(self,type='atom',coords=None,N=1,pitch_x=0,direction=(1,0),U=0,alpha=0.04,spiral = 0,mode=0,m=18.7,pf = 0.21,delta_s = 1e-3,gamma_s=50e-6,E_px=500,E_range=[-5,5],V_range=[-3,3],spin_texture = None) -> None:
         self.N = N
-        self.direction = direction
-        self.pitch = pitch_x
         self.mode = mode
         self.m=m
-        self.V_range = V_range
         self.pf=pf
         self.delta_s = delta_s
         self.gamma_s = gamma_s
         self.U = np.zeros(self.N)+U
-        self.c = const.physical_constants['Hartree energy'][0]/const.e
         self.alpha = np.zeros(self.N)+alpha
-        self.coords = self.coord_gen()
+        self.V_range = V_range
+        self.E_range = E_range
         self.E_px = E_px
-        # create angles
-        self.angles = []
-        a = 0
-        for i in range(0,N):
-            a += spiral
-            self.angles.append(a)
-        self.E = np.linspace(-E_range*self.delta_s,E_range*self.delta_s,self.E_px)
 
+        # depending on type selected initialize an atom a 1D or 2D structure
+        if type == 'atom':
+            self.angles = [0,]
+            self.coords = [[0,0]]
+        if type == '1D':
+            self.direction = direction
+            self.pitch = pitch_x
+            self.coords = self.coord_gen()
+            # create angles
+            self.angles = []
+            a = 0
+            for i in range(0,N):
+                a += spiral
+                self.angles.append(a)
+        elif type == '2D':
+            self.angles = np.zeros(N)
+            self.coords = coords
+        if spin_texture != None:
+            self.angles = spin_texture
+
+        # define energy and bias axes
+        self.E = np.linspace(E_range[0]*self.delta_s,E_range[1]*self.delta_s,E_px)
+        self.V = np.linspace(self.delta_s*V_range[0],self.delta_s*V_range[1],E_px)
+
+        #initialize green function class
+        self.c = const.physical_constants['Hartree energy'][0]/const.e
         self.sim = green(self.N , self.alpha , self.angles , self.coords,U=self.U ,m=self.m,pf=self.pf,delta=self.delta_s/self.c,mode=self.mode)
         self.par = { # to save parameters
+            'type' : type,
             'N' : N,
+            'coords' : self.coords,
             'direction' : direction,
             'pitch_x' : pitch_x,
             'mode' : mode,
@@ -264,7 +250,8 @@ class chain():
             'gamma_s' : gamma_s,
             'U' : U,
             'alpha' : alpha,
-            'E' : [self.E[-1],E_px],
+            'E' : [E_range,E_px],
+            'V' : [V_range,E_px],
             'angles' : spiral,
         }
 
@@ -277,6 +264,27 @@ class chain():
             n+=self.pitch
         return coords
 
+    def show_lattice(self):
+        f,ax = plt.subplots(1)
+        for i in self.coords:
+            ax.scatter(i[0],i[1],color='C0')
+
+    def map_coord_gen(self,spac,resolution,size): # spac is the point spacing of the grid, resolution is the number of points in one line, size is the length in units of spacing 
+        self.resolution = resolution
+        A = np.arange(-spac*size/2,spac*size/2+(spac*size)/resolution,(spac*size)/resolution)
+        Gx = np.meshgrid(A,A)[0]
+        Gy = np.meshgrid(A,A)[1]
+        self.map_coords = [Gx,Gy]
+
+    def show_lattice_map(self):
+        f,ax = plt.subplots(1)
+        for i in range(len(self.map_coords[0])):
+            ax.scatter(self.map_coords[0][i],self.map_coords[1][i],color='C1')    
+        for i in self.coords:
+            ax.scatter(i[0],i[1],color='C0')
+        ax.set_xlabel('x (a0)')
+        ax.set_ylabel('Y (a0)')
+        set_size_cm(8,8)
 
     def didv(self,coord):
         spec = []
@@ -287,17 +295,31 @@ class chain():
             for k in self.E/self.c:
                 spec.append(np.sign(k)*(self.sim.DOS(coord, k + self.gamma_s*1j*np.sign(k)/self.c)))
         
-        return np.array(spec/spec[0])
+        return np.array(spec/spec[-1])
 
-    def didv_conv(self,coord,Delta_t,Gamma_t):
+    def didv_map_calc(self):
+        #timecalc
+        t0 = time.time()
+        self.didv([0,0])
+        t1 = time.time()
+        total_time = (t1-t0)*self.resolution*self.resolution
+        print('Simulation time = {}'.format(np.round(total_time/60,2)))
+        ####
+        self.didv_map = np.zeros((self.resolution,self.resolution,self.E.shape[0]))
+        for i in range(self.resolution):
+            for j in range(self.resolution):
+                self.didv_map[i,j,:] = self.didv([self.map_coords[0][i,j],self.map_coords[1][i,j]])
+
+
+    def didv_conv(self,coord,Delta_t=1e-3,Gamma_t=50e-6):
         dos = self.didv(coord)
-        self.V = np.linspace(-self.delta_s*5,self.delta_s*5,self.E_px)
         conv_dos = dynesConvolute(self.V,self.E,dos,Delta_t,1.3,Gamma_t)
-        return np.array(conv_dos)
+        return np.array(conv_dos)/np.array(conv_dos)[0]
 
     def linescan(self,density):
         x = self.pitch
         y = self.pitch*self.direction[1]
+        self.length = np.sqrt(x**2+y**2)*(self.N+2)
         self.LSx = np.linspace(self.coords[0][0]-x,self.coords[-1][0]+x,(self.N)*density)
         self.LSy = np.linspace(self.coords[0][1]-y,self.coords[-1][1]+y,(self.N)*density)
         
@@ -322,95 +344,32 @@ class chain():
         for i in range(self.LS.shape[0]):
             self.LSC[i,:] = (dynesConvolute(self.V,self.E,self.LS[i,:],Delta_t,1.3,Gamma_t))
     
+    def explorer(self):
+        self.figure = plt.figure(figsize=(6,6))
+        self.axMap = self.figure.add_subplot(1,1,1)
+        self.figure.subplots_adjust(bottom=0.35)
+        self.ax1 = self.figure.add_axes([0.20, 0.10, 0.65, 0.03])
+        self.ax2 = self.figure.add_axes([0.20, 0.15, 0.65, 0.03])
+        self.ax3 = self.figure.add_axes([0.20, 0.20, 0.65, 0.03])
+        self.energyCut_slider = Slider(self.ax1,'Energy cut',self.E.min()*1e3,self.E.max()*1e3,valinit=0, valstep=(0.01))
+        self.smin_slider = Slider(self.ax2, 'Min', self.didv_map.min(), self.didv_map.max(), valinit =self.didv_map.min())
+        self.smax_slider = Slider(self.ax3, 'Max', self.didv_map.min(), self.didv_map.max(), valinit =self.didv_map.max()*0.5)            
+        self.energyCut_slider.on_changed(self.update_energy)
+        self.smin_slider.on_changed(self.update_cscale)
+        self.smax_slider.on_changed(self.update_cscale)
+        self.didv_map_cut = self.didv_map[:,:,0]
+        self.im1 = self.axMap.imshow(np.flipud(self.didv_map_cut),interpolation='nearest')
+        #axis labels
+        self.axMap.set_xlabel('x (nm)')
+        self.axMap.set_ylabel('y (nm)')
 
-class lattice():
-    def __init__(self,N,coords,direction=(1,0),U=0,alpha=0.04,spiral = 0,mode=0,m=18.7,pf = 0.21,delta_s = 0.78e-3,gamma_s=20e-6) -> None:
-        self.N = N
-        self.direction = direction
-        self.mode = mode
-        self.m=m
-        self.pf=pf
-        self.delta_s = delta_s
-        self.pitch_x = None
-        self.gamma_s = gamma_s
-        self.U = np.zeros(self.N)+U
-        self.c = const.physical_constants['Hartree energy'][0]/const.e
-        self.alpha = np.zeros(self.N)+alpha
-        self.coords = coords
-        # create angles
-        self.angles = []
-        a = 0
-        for i in range(0,N):
-            a += spiral
-            self.angles.append(a)
-        self.E = np.linspace(-5*self.delta_s,5*self.delta_s,100)
-        self.sim = green(self.N , self.alpha , self.angles , self.coords,U=self.U ,m=self.m,pf=self.pf,delta=self.delta_s/self.c,mode=self.mode)
-        self.par = { # to save parameters
-            'N' : N,
-            'direction' : direction,
-            'coords' : coords,
-            'mode' : mode,
-            'm' : m,
-            'pitch_x' : None,
-            'pf' : pf,
-            'delta_s' : delta_s,
-            'gamma_s' : gamma_s,
-            'U' : U,
-            'alpha' : alpha,
-            'E' : [1.5*self.delta_s,100],
-            'angles' : spiral,
-        }
+    def update_energy(self,val):
+        self.cutIdx = (abs(self.E-val*1e-3)).argmin()
+        self.im1.set_data(np.flipud(self.didv_map[:,:,self.cutIdx]))
+        self.im1.set_clim(self.didv_map[:,:,self.cutIdx].min(),self.didv_map[:,:,self.cutIdx].max())
+        # self.label.set_text('{} mV'.format(np.round(val,2)))
+        self.figure.canvas.draw()
 
-
-    def show_lattice(self):
-        f,ax = plt.subplots(1)
-        for i in self.coords:
-            ax.scatter(i[0],i[1],color='C0')
-
-    def map_coord_gen(self,spac,resolution,size): # spac is the point spacing of the grid, resolution is the number of points in one line, size is the length in units of spacing 
-        self.resolution = resolution
-        A = np.arange(-spac*size/2,spac*size/2+(spac*size)/resolution,(spac*size)/resolution)
-        Gx = np.meshgrid(A,A)[0]
-        Gy = np.meshgrid(A,A)[1]
-        self.map_coords = [Gx,Gy]
-
-    def show_lattice_map(self):
-        f,ax = plt.subplots(1)
-        for i in range(len(self.map_coords[0])):
-            ax.scatter(self.map_coords[0][i],self.map_coords[1][i],color='C1')    
-        for i in self.coords:
-            ax.scatter(i[0],i[1],color='C0')
-
-
-
-    def didv(self,coord):
-        spec = []
-        if self.U[0] != 0:
-            for k in self.E/self.c:
-                spec.append(np.sign(k)*self.sim.ElecDOS(coord, k + self.gamma_s*1j*np.sign(k)/self.c))
-        else:
-            for k in self.E/self.c:
-                spec.append(np.sign(k)*(self.sim.DOS(coord, k + self.gamma_s*1j*np.sign(k)/self.c)))
-        
-        return np.array(spec)
-    
-    def didv_conv(self,coord,Delta_t,Gamma_t):
-        dos = self.didv(coord)
-        self.V = np.linspace(-self.delta_s*5,self.delta_s*5,100)
-        conv_dos = dynesConvolute(self.V,self.E,dos,Delta_t,1.3,Gamma_t)
-        return np.array(conv_dos)
-
-    def didv_map_calc(self):
-        #timecalc
-        t0 = time.time()
-        self.didv([0,0])
-        t1 = time.time()
-        total_time = (t1-t0)*self.resolution*self.resolution
-        print('Simulation time = {}'.format(np.round(total_time/60,2)))
-        ####
-        self.didv_map = np.zeros((self.resolution,self.resolution,self.E.shape[0]))
-        for i in range(self.resolution):
-            for j in range(self.resolution):
-                self.didv_map[i,j,:] = self.didv([self.map_coords[0][i,j],self.map_coords[1][i,j]])
-
-    
+    def update_cscale(self,val):
+        self.im1.set_clim([self.smin_slider.val,self.smax_slider.val])
+        self.figure.canvas.draw()
