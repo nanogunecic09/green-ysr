@@ -60,17 +60,6 @@ def set_size_cm(w,h, ax=None):
     figh = float(h*cm)/(t-b)
     ax.figure.set_size_inches(figw, figh)
 
-import matplotlib
-def spines(ax):
-    plt.setp(ax.spines.values(), lw=0.3)
-    ax.tick_params(width=0.3)
-    new_rc_params = {'text.usetex': False,
-    "svg.fonttype": 'none'
-    }
-    matplotlib.rcParams.update(new_rc_params)
-    matplotlib.rcParams['axes.unicode_minus']=False
-
-
 
 class green():
     def __init__(self,N,alpha,theta,r__,U=0,m=20.956,pf=0.274,delta=0.0000287,gamma=40e-6,mode=1):
@@ -87,6 +76,7 @@ class green():
         self.delta = delta # delta superconductor
         self.gamma = gamma # dynes parameter
         self.mode = mode # dimensionality of fermi surface 1 circular, 2 squared
+
     def G0(self,r1,r2,E):
         delta = self.delta
         w = np.sqrt(delta**2-E**2)
@@ -174,30 +164,12 @@ class green():
     def HoleDOS(self,r_,E):
         return np.imag(np.trace(np.dot(self.G(r_,E),np.diag((0,0,1,1)))))
 
-    def rhoss(self,L,E):
-        self.alphaL_ = self.alpha_*L
-        rhoss = 0
-        for n in range(0,self.N):
-            G = -np.imag(self.G(self.r__[n],E))
-            rhoss += self.alphaL_[n]*( (G[0,0]-G[1,1]) * np.cos(self.theta_[n]) + (G[1,0]-G[0,1]) * np.sin(self.theta_[n]) )
-        return rhoss
-
-    def spectra(self,r_):
-        c = const.physical_constants['Hartree energy'][0]/const.e
-        E = np.linspace(-4*self.delta ,4*self.delta,300)/c
-        spectra=[]
-        for i in E:
-            spectra.append(np.sign(i)*self.DOS( r_, i + self.gamma*1j*np.sign(i)/c))
-        return spectra
-
-    def rho4(self,r_,E):
-        return np.imag(self.G(r_,E))
     
 
     
 
 class lattice():
-    def __init__(self,type='atom',coords=None,N=1,pitch_x=0,direction=(1,0),U=0,alpha=0.04,spiral = 0,mode=0,m=18.7,pf = 0.21,delta_s = 1e-3,gamma_s=50e-6,E_px=500,E_range=[-5,5],V_range=[-3,3],spin_texture = None) -> None:
+    def __init__(self,type='atom',N=1,coords=None,pitch_x=0,direction=(1,0),alpha=0.04,U=0,spiral = 0,mode=0,m=18.7,pf = 0.21,delta_s = 1e-3,gamma_s=50e-6,E_px=500,E_range=(-5,5),V_range=(-3,3),spin_texture = None,T=1.3) -> None:
         self.N = N
         self.mode = mode
         self.m=m
@@ -209,7 +181,7 @@ class lattice():
         self.V_range = V_range
         self.E_range = E_range
         self.E_px = E_px
-
+        self.T = T
         # depending on type selected initialize an atom a 1D or 2D structure
         if type == 'atom':
             self.angles = [0,]
@@ -313,7 +285,7 @@ class lattice():
 
     def didv_conv(self,coord,Delta_t=1e-3,Gamma_t=50e-6):
         dos = self.didv(coord)
-        conv_dos = dynesConvolute(self.V,self.E,dos,Delta_t,1.3,Gamma_t)
+        conv_dos = dynesConvolute(self.V,self.E,dos,Delta_t,self.T,Gamma_t)
         return np.array(conv_dos)/np.array(conv_dos)[0]
 
     def linescan(self,density):
@@ -342,7 +314,7 @@ class lattice():
         self.LSC = np.zeros(self.LS.shape)
         self.V = np.linspace(-self.delta_s*self.V_range,self.delta_s*self.V_range,self.E_px)
         for i in range(self.LS.shape[0]):
-            self.LSC[i,:] = (dynesConvolute(self.V,self.E,self.LS[i,:],Delta_t,1.3,Gamma_t))
+            self.LSC[i,:] = (dynesConvolute(self.V,self.E,self.LS[i,:],Delta_t,self.T,Gamma_t))
     
     def explorer(self):
         self.figure = plt.figure(figsize=(6,6))
