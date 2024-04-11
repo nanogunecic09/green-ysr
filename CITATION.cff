@@ -1,0 +1,7 @@
+@software{green-ysr,
+  author = {Stefano Trivini, Jon Ortuzar},
+  title = {{green-ysr}},
+  url = {https://github.com/nanogunecic09/green-ysr},
+  version = {0.0.4},
+  year = {2024}
+}
