@@ -3,7 +3,7 @@ import green_ysr as gr
 import scipy.ndimage
 import numpy as np
 
-chain_sim = gr.lattice(type='1D',N=3,pitch_x=6.3,alpha=0.03,direction=(1,2),mode=1,U=0,spiral=0,m=18.7,pf = 0.28) # load the simulator
+chain_sim = gr.chain(9,6.3,J=0.03,direction=(1,2),mode=1,U=0,spiral=0,m=18.7,pf = 0.28) # load the simulator
 chain_sim.linescan(3)# compute the linescan with 3 points per atom
 chain_sim.LSconvolute(0.65e-3,40e-6) # convolute linescan with a supercondcting tip [delta,dynes]
 gr.sim_save(chain_sim) # save the calculation in the output
