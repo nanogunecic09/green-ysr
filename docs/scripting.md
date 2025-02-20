@@ -59,8 +59,41 @@ this should produce this plot:
 
 ![alt text](conv_single_atom.png)
 
+### Fermi surface anisotropy
+
+The Fermi surface contour shape can be set as circular, squared or hexagonal (mode=1,2,3 respectively). Next you find an example, the calculation of the LDOS at the YSR energy in the vicinity of one isolated impurity, with the three different Fermi surface contours.
+
+Initializing the simulation of a single atom with a circular contour (mode=0, default):
+
+    atom = gr.lattice(type='atom',alpha=0.04,E_px=50,E_range=[0,2],mode=0)
+
+Calculation of the LDOS in squared grid (80x80 a0):
+
+    atom.map_coord_gen(64,80) 
+    atom.didv_map_calc()
 
 
+the result is a 64x64x50 numpy ndarray stored in:
+
+    atom.didv_map()
+
+a quick visualization of the result can be done with:
+
+atom.explorer()
+
+![alt text](circular.png)
+
+where the slider 'Energy cut' serves to plot the constant energy cuts of the 64x64 grid.
+
+For the squared and fermi contour, change the mode parameter to 2 and 3. For mode = 2, with the same commands you should see:
+
+![alt text](squared.png)
+
+For mode = 3 :
+
+![alt text](hexagonal.png)
+
+In the next sections we will show examples on lattices with circular Fermi surface, but 
 ### Dimer
 
 For a dimer we ser N=2 and the pitch_x as the distance between the two atoms in atomic units (Bohr radius). The atoms of the dimer have coordinates ([0,0],[0,8]).
@@ -133,9 +166,9 @@ To initialize the calculation:
 
 where we limited the energy points and range (didv is simmetric since particle-hole simmetry).
 
-The .didv method can be used to calculate the LDOS in specific points (see above). To calculate the DOS in a squared grid around the structure, first generate the grid points:
+The .didv method can be used to calculate the LDOS in specific points (see above). To calculate the DOS in a squared grid around the structure (50.4x50.4 a0), first generate the grid points:
 
-    cross.map_coord_gen(12.6,28,4)
+    cross.map_coord_gen(28,50.4)
     cross.show_lattice_map()
 
 the second command with show the lattice toghether with the LDOS map points:

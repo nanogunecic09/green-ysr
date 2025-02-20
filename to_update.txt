@@ -1,0 +1,10 @@
+# to update repo
+1) clean the dist folder
+2) update the version in pyproject.toml
+run:
+poetry build
+
+run:
+twine upload dist/*
+
+

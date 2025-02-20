@@ -9,3 +9,4 @@ green_ysr/examples/examples.ipynb
 green_ysr/green_ysr/__pycache__
 green_ysr/.pytest_cache
 green_ysr/out/*
+green_ysr/tests/paper.ipynb
