@@ -1,7 +1,7 @@
 green-ysr/green_ysr/__pycache__
 green-ysr/tests/__pycache__
-green_ysr/dist
-green-ysr/dist/*
+dist
+dist/*
 green-ysr/tests/__pycache__/test_dimer.cpython-39-pytest-6.2.4.pyc
 green-ysr/green_ysr/__pycache__/green_ysr.cpython-39.pyc
 site
@@ -10,3 +10,6 @@ green_ysr/green_ysr/__pycache__
 green_ysr/.pytest_cache
 green_ysr/out/*
 green_ysr/tests/paper.ipynb
+to_update.txt
+green_ysr/pyproject.toml
+dist/green_ysr-0.0.1.tar.gz
