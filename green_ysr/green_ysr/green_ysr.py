@@ -35,7 +35,7 @@ def load_obj(name ):
 
 def sim_save(sim):
     keys = ['type','N','direction','pitch_x','mode','U','alpha','angles']
-    fname = 'sim'
+    fname = 'green_ysr/out/sim'
     for i in keys:
         fname  =  fname +'_'+ i  + '{}'.format(sim.par[i])
     save_obj(sim,fname)
@@ -307,7 +307,7 @@ class lattice():
         self.didv([0,0])
         t1 = time.time()
         total_time = (t1-t0)*self.resolution*self.resolution
-        print('Simulation time = {}'.format(np.round(total_time/60,2)))
+        print('Simulation time = {}'.format(np.round(total_time/60,2))+' minutes')
         ####
         self.didv_map = np.zeros((self.resolution,self.resolution,self.E.shape[0]))
         for i in range(self.resolution):
@@ -332,7 +332,7 @@ class lattice():
         self.didv((self.LSx[0],self.LSy[0]))
         t1 = time.time()
         total_time = (t1-t0)*len(self.LSx)
-        print('Simulation time = {}'.format(np.round(total_time/60,2)))
+        print('Simulation time = {}'.format(np.round(total_time/60,2))+' minutes')
         ####
 
         self.LS = []
@@ -369,7 +369,7 @@ class lattice():
         self.axMap.set_ylabel('y (nm)')
         self.axSpec.set_xlabel('Energy (meV)')
         self.axSpec.set_xlabel('LDOS (GN)')
-
+        self.figure.suptitle('Click on the map to see the spectrum')
 
         self.figure.canvas.mpl_connect('button_press_event', self.onclick)
     def update_energy(self,val):
