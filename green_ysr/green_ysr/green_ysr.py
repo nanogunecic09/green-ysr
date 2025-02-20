@@ -35,7 +35,7 @@ def load_obj(name ):
 
 def sim_save(sim):
     keys = ['type','N','direction','pitch_x','mode','U','alpha','angles']
-    fname = 'green_ysr/out/sim'
+    fname = 'sim'
     for i in keys:
         fname  =  fname +'_'+ i  + '{}'.format(sim.par[i])
     save_obj(sim,fname)
