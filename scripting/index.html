@@ -140,16 +140,17 @@ plt.tight_layout()
 <p>Initializing the simulation of a single atom with a circular contour (mode=0, default):</p>
 <pre><code>atom = gr.lattice(type='atom',alpha=0.04,E_px=50,E_range=[0,2],mode=0)
 </code></pre>
-<p>Calculation of the LDOS in squared grid:</p>
-<pre><code>atom.map_coord_gen(20,64,4)
+<p>Calculation of the LDOS in squared grid (80x80 a0):</p>
+<pre><code>atom.map_coord_gen(64,80) 
 atom.didv_map_calc()
 </code></pre>
-<p>the result is stored in:</p>
+<p>the result is a 64x64x50 numpy ndarray stored in:</p>
 <pre><code>atom.didv_map()
 </code></pre>
 <p>a quick visualization of the result can be done with:</p>
 <p>atom.explorer()</p>
 <p><img alt="alt text" src="../circular.png" /></p>
+<p>where the slider 'Energy cut' serves to plot the constant energy cuts of the 64x64 grid.</p>
 <p>For the squared and fermi contour, change the mode parameter to 2 and 3. For mode = 2, with the same commands you should see:</p>
 <p><img alt="alt text" src="../squared.png" /></p>
 <p>For mode = 3 :</p>
@@ -201,8 +202,8 @@ atom.didv_map_calc()
 <pre><code>cross = gr.lattice(type='2D',N=5,coords=cross_coords,alpha=0.04,E_px=50,E_range=[0,2])
 </code></pre>
 <p>where we limited the energy points and range (didv is simmetric since particle-hole simmetry).</p>
-<p>The .didv method can be used to calculate the LDOS in specific points (see above). To calculate the DOS in a squared grid around the structure, first generate the grid points:</p>
-<pre><code>cross.map_coord_gen(12.6,28,4)
+<p>The .didv method can be used to calculate the LDOS in specific points (see above). To calculate the DOS in a squared grid around the structure (50.4x50.4 a0), first generate the grid points:</p>
+<pre><code>cross.map_coord_gen(28,50.4)
 cross.show_lattice_map()
 </code></pre>
 <p>the second command with show the lattice toghether with the LDOS map points:</p>
